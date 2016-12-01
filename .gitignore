@@ -7,3 +7,9 @@ node_modules
 
 # Sublime Text
 *.sublime-*
+
+# Redis
+dump.rdb
+
+# Vim
+*.swp
