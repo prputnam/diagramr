@@ -14,6 +14,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
 var register = require('./routes/register');
+var lobby = require('./routes/lobby');
 
 var app = express();
 
@@ -72,6 +73,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 app.use('/register', register);
+app.use('/lobby', lobby);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -89,7 +91,16 @@ app.use(function(err, req, res, next) {
     // render the error page
     res.status(err.status || 500);
     res.render('error');
+});
 
+
+app.io.on('connection', function(socket){
+    console.log('a user connected');
+
+    socket.on('message', function(message) {
+        console.log(message);
+        socket.emit('message', message);
+    });
 });
 
 module.exports = app;

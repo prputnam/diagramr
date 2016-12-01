@@ -1,0 +1,41 @@
+{{#extend "stylesheets"}}
+    <link rel='stylesheet' href='/stylesheets/lobby.css' />
+{{/extend}}
+
+<div class="container" id="page">
+    <h1>lobby</h1>
+    {{#each diagrams}}
+    <h2>{{name}}</h2>
+    {{/each}}
+
+    <div class="row">
+        <div class="panel panel-default">
+          <div class="panel-heading">Panel heading without title</div>
+          <div class="panel-body">
+            <div id="message-panel" class="container">
+
+            </div>
+            <div class="panel-footer">
+                 <div class="input-group">
+                  <input id="messageText" type="text" class="form-control">
+                  <span class="input-group-btn">
+                    <button id="messageSend" class="btn btn-default" type="button">Send</button>
+                  </span>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+{{#extend "scripts"}}
+
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript">
+        var
+        userId = {{userId}},
+        diagrams = {{{json diagrams}}};
+    </script>
+    <script type="text/javascript" src="/javascripts/lobby.js"></script>
+
+{{/extend}}
