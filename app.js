@@ -15,6 +15,7 @@ var users = require('./routes/users');
 var login = require('./routes/login');
 var register = require('./routes/register');
 var lobby = require('./routes/lobby');
+var diagram = require('./routes/diagram')
 
 var app = express();
 
@@ -43,6 +44,9 @@ hbs.registerHelper('block', function(name) {
     return val;
 });
 
+hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+});
 
 
 // uncomment after placing your favicon in /public
@@ -74,6 +78,7 @@ app.use('/users', users);
 app.use('/login', login);
 app.use('/register', register);
 app.use('/lobby', lobby);
+app.use('/diagram', diagram)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
