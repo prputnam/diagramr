@@ -15,6 +15,8 @@ var login = require('./routes/login');
 
 var app = express();
 
+app.io = require('socket.io')();
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
