@@ -1,6 +1,7 @@
 var
 socket = io(),
-messages = [];
+messages = [],
+diagramId = -1;
 
 
 //rivets.bind($('#message-panel'), { messages: messages });
@@ -17,14 +18,22 @@ $(document).ready(function() {
 */
 
 $(document).ready(function() {
+
     $("#messageSend").click(function() {
         var content = $("#messageText").val();
-        socket.emit('message', {name: userId, content: content});
+        socket.emit('message', { userId: userId, name: username, content: content, diagramId: diagramId });
+        $("#messageText").val('');
     });
+
 });
 
 socket.on('message', function(message) {
     addMessageToScreen(message);
+});
+
+socket.on('connect', function() {
+    // join the correct chat room
+    socket.emit('join', diagramId);
 });
 
 addMessageToScreen = function(message) {

@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var hbs = require('hbs');
+var db = require('db');
 
 var session = require('express-session');
 var redis = require('connect-redis')(session);
@@ -19,7 +20,7 @@ var diagram = require('./routes/diagram')
 
 var app = express();
 
-app.io = require('socket.io')();
+var io = app.io = require('socket.io')();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -98,13 +99,22 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
+// chat
+io.on('connection', function(socket){
 
-app.io.on('connection', function(socket){
-    console.log('a user connected');
+    // after the client connects, they will issue a join message
+    // with the diagram ID to represent that chat they will be joining
+    socket.on('join', function(diagramId) {
+        socket.join(diagramId);
+    });
 
+    // when a a client sends a message..
     socket.on('message', function(message) {
-        console.log(message);
-        socket.emit('message', message);
+        // log message
+        db('chat_logs').insert({ user_id: message.userId, diagram_id: message.diagramId, message_datetime: new Date(), message: message.content }).then(function(data) {});
+
+        // send message to all clients in the correct room
+        io.sockets.in(message.diagramId).emit('message', message);
     });
 });
 
