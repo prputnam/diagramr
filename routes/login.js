@@ -17,17 +17,27 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     if(req.body.email && req.body.password) {
-        db.select().from('users').where({ email: req.body.email }).first().then(function(data) {
-            bcrypt.compare(req.body.password, data.password, function(err, success) {
-                if(err) next(err);
+        db.select()
+                .from('users')
+                .where({ email: req.body.email })
+                .first()
+                .then(function(data) {
 
-                if(success) {
-                    req.session.userId = data.id;
-                    res.redirect('/lobby');
-                } else {
-                    res.status(500).render('login', { title: 'Login', body: '<p>Login page</p>', failedLogin: true });
-                }
-            });
+            if(data) {
+
+                bcrypt.compare(req.body.password, data.password, function(err, success) {
+
+                    if(err) next(err);
+
+                    if(success) {
+                        req.session.userId = data.id;
+                        req.session.username = data.username;
+                        res.redirect('/lobby');
+                    }
+                });
+            }
+
+            res.status(500).render('login', { title: 'Login', body: '<p>Login page</p>', failedLogin: true });
         });
     } else {
         res.status(500).render('login', { title: 'Login', failedLogin: true, message: 'Must supply username and password.' });

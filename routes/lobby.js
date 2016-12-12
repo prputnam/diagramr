@@ -12,8 +12,12 @@ router.use(function(req, res, next) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    db.select('diagram.id', 'diagram.name').from('user_diagram').join('diagram', 'user_diagram.diagram_id', '=', 'diagram.id').where('user_diagram.user_id', req.session.userId).then(function(data) {
-        res.render('lobby', { userId: req.session.userId, diagrams: data });
+    db.select('d.id', 'd.name')
+            .from('user_diagrams AS ud')
+            .join('diagrams AS d', 'ud.diagram_id', '=', 'd.id')
+            .where('ud.user_id', req.session.userId)
+            .then(function(data) {
+        res.render('lobby', { userId: req.session.userId, username: req.session.username, diagrams: data });
     });
 });
 
