@@ -23,21 +23,13 @@ router.post('/', function(req, res, next) {
                 .first()
                 .then(function(data) {
 
-            if(data) {
-
-                bcrypt.compare(req.body.password, data.password, function(err, success) {
-
-                    if(err) next(err);
-
-                    if(success) {
-                        req.session.userId = data.id;
-                        req.session.username = data.username;
-                        res.redirect('/lobby');
-                    }
-                });
+            if(data && bcrypt.compareSync(req.body.password, data.password)) {
+                req.session.userId = data.id;
+                req.session.username = data.username;
+                res.redirect('/lobby');
+            } else {
+                res.status(500).render('login', { title: 'Login', body: '<p>Login page</p>', failedLogin: true });
             }
-
-            res.status(500).render('login', { title: 'Login', body: '<p>Login page</p>', failedLogin: true });
         });
     } else {
         res.status(500).render('login', { title: 'Login', failedLogin: true, message: 'Must supply username and password.' });
