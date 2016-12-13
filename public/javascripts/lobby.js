@@ -33,7 +33,11 @@ socket.on('message', function(message) {
 
 socket.on('connect', function() {
     // join the correct chat room
-    socket.emit('join', diagramId);
+    socket.emit('join', { diagramId: diagramId, userId: userId, username: username });
+});
+
+socket.on('clients', function(clients) {
+    console.log(clients);
 });
 
 addMessageToScreen = function(message) {

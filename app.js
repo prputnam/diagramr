@@ -99,13 +99,35 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-// chat
+// chat server
+function getConnectedClients(diagramId) {
+    var
+    connctedClientIds = io.sockets.adapter.rooms[diagramId].sockets,
+    clients = [];
+
+    for(var id in connctedClientIds) {
+        var client = io.sockets.connected[id];
+        clients.push(client.user);
+    }
+
+    return clients;
+}
+
 io.on('connection', function(socket){
 
     // after the client connects, they will issue a join message
     // with the diagram ID to represent that chat they will be joining
-    socket.on('join', function(diagramId) {
-        socket.join(diagramId);
+    socket.on('join', function(data) {
+        socket.join(data.diagramId);
+        socket.user = {
+            userId: data.userId,
+            username: data.username
+        };
+
+        // return the list of clients currently in the channel
+        var connectedClients = getConnectedClients(data.diagramId);
+        io.sockets.in(data.diagramId).emit('clients', connectedClients);
+
     });
 
     // when a a client sends a message..
