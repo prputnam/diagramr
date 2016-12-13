@@ -15,6 +15,7 @@ CREATE TABLE users (
 CREATE TABLE diagrams (
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL,
+    created_by INTEGER REFERENCES users (id),
     diagram TEXT
 );
 
