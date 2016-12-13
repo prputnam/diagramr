@@ -1,0 +1,30 @@
+<div class="container">
+
+    <div class="row">
+        <h2>{{diagram.name}}</h2>
+
+        <h3>Created by {{diagram.createdByUsername}}</h3>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-xs-4"></div>
+        <div class="col-xs-8">
+            <canvas id="c" style="height:'100%'; width='100%'"></canvas>
+        </div>
+    </div>
+
+
+</div>
+
+{{#extend "scripts"}}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.1/fabric.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript">
+        var
+        diagram = {{{json diagram}}};
+        console.log(diagram);
+    </script>
+    <script type="text/javascript" src="/javascripts/diagram.js"></script>
+
+{{/extend}}
