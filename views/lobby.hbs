@@ -1,31 +1,61 @@
 {{#extend "stylesheets"}}
-    <link rel='stylesheet' href='/stylesheets/lobby.css' />
+        <link rel='stylesheet' href='/stylesheets/lobby.css' />
 {{/extend}}
 
 <div class="container" id="page">
-    <h1>lobby</h1>
-    {{#each diagrams}}
-    <h2>{{name}}</h2>
-    {{/each}}
+        <h1>Lobby</h1>
+        <hr>
+        <h2>Diagrams</h2>
+        <a data-toggle="modal" data-target="#new-diagram-modal"><h4 class="text-right">New Diagram</h4></a>
+        {{#each diagrams}}
+        <a href="/diagram/{{id}}"><h2>{{name}}</h2></a>
+        {{else}}
+        <p>No diagrams - you should make one!</p>
+        {{/each}}
 
-    <div class="row">
-        <div class="panel panel-default">
-          <div class="panel-heading">Panel heading without title</div>
-          <div class="panel-body">
-            <div id="message-panel" class="container">
-
-            </div>
-            <div class="panel-footer">
-                 <div class="input-group">
-                  <input id="messageText" type="text" class="form-control">
-                  <span class="input-group-btn">
-                    <button id="messageSend" class="btn btn-default" type="button">Send</button>
-                  </span>
+        <div class="modal fade" role="dialog" id="new-diagram-modal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                        <h4 class="modal-title">New Diagram</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" method="post">
+                            <div class="form-group">
+                                <label for="name" class="col-sm-2 control-label">Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="name" placeholder="Name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-default">Create</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-    </div>
+
+        <div class="row">
+            <div class="panel panel-default">
+                <div class="panel-heading">Chat </div>
+                <div class="panel-body">
+                    <div id="message-panel" class="container">
+                    </div>
+                    <div class="panel-footer">
+                        <div class="input-group">
+                            <input id="messageText" type="text" class="form-control">
+                            <span class="input-group-btn">
+                                <button id="messageSend" class="btn btn-default" type="button">Send</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 
 {{#extend "scripts"}}

@@ -21,4 +21,15 @@ router.get('/', function(req, res, next) {
     });
 });
 
+router.post('/', function(req, res, next) {
+    console.log(req.body);
+    db('diagrams').returning('id', 'name').insert({ name: req.body.name, created_by: req.session.userId }).then(function (data) {
+
+        var newDiagramId = data[0];
+        db('user_diagrams').insert({ diagram_id: newDiagramId, user_id: req.session.userId }).then(function(data) {
+            res.redirect('/diagram/' + newDiagramId);
+        });
+    });
+});
+
 module.exports = router;
