@@ -49,8 +49,11 @@ function buildEntity(top, left, height, width, text) {
 }
 
 $(document).ready(function() {
-    $('button.rectangle').click(function() {
-        buildEntity(100, 100, 250, 250, 'Hello, world!');
+    $('#create-rectangle').click(function() {
+        var text = $('input[name="text"]').val();
+        buildEntity(100, 100, 250, 250, text);
+        $('.modal').modal('toggle');
+        $('form')[0].reset();
         console.log('rectangle built')
     });
 

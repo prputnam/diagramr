@@ -3,7 +3,31 @@
 {{/extend}}
 
 <div class='menu'>
-    <button class="btn btn-default rectangle" type="button">Rectangle</button>
+    <button class="btn btn-default rectangle" type="button" data-toggle="modal" data-target=".modal">Rectangle</button>
+    <div class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    <h4 class="modal-title">New Rectangle</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" method="post">
+                        <div class="form-group">
+                            <label for="text" class="col-sm-2 control-label">Text</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="text" placeholder="Text">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" id="create-rectangle" class="btn btn-primary">Create</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>
 
 <div class="wrapper">
