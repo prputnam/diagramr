@@ -5,14 +5,13 @@
 <div class="container" id="page">
 
     <ul class="nav nav-tabs">
-        <li class="active"><a href="#diagrams" data-toggle="tab">Diagrams</a></li>
-        <li><a href="#chat" data-toggle="tab">Chat</a></li>
-        <li><a href="#users" data-toggle="tab">Users</a></li>
+        <li class="active"><a href="#diagrams" data-toggle="tab"><h2>Diagrams</h2></a></li>
+        <li><a href="#chat" data-toggle="tab"><h2>Chat</h2></a></li>
+        <li><a href="#users" data-toggle="tab"><h2>Users</h2></a></li>
     </ul>
 
     <div class="tab-content">
         <div class="tab-pane active" id="diagrams">
-            <h2>Diagrams</h2>
             <a data-toggle="modal" data-target="#new-diagram-modal"><h4 class="text-right">New Diagram</h4></a>
             {{#each diagrams}}
             <a href="/diagram/{{id}}"><h2>{{name}}</h2></a>
@@ -69,7 +68,10 @@
         </div>
 
         <div class="tab-pane" id="users">
+            <h2>Current Users Online</h2>
+            <ul id="user-list">
 
+            </ul>
         </div>
     </div>
 </div>

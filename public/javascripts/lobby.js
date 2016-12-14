@@ -37,6 +37,13 @@ socket.on('connect', function() {
 });
 
 socket.on('clients', function(clients) {
+    var userList = $('#user-list');
+
+    userList.empty();
+
+    clients.forEach(function(client) {
+        userList.append('<li>' + client.username + '</li>');
+    });
     console.log(clients);
 });
 
