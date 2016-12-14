@@ -6,42 +6,51 @@ x = 0,
 y = 0,
 entities = [];
 
+//canvas.selection = false;
+
 for (var i = 0; i < (1000 / grid + 1); i++) {
-    canvas.add(new fabric.Line([ i * grid, 0, i * grid, 1000], { stroke: '#ccc', selectable: false }));
-    canvas.add(new fabric.Line([ 0, i * grid, 1000, i * grid], { stroke: '#ccc', selectable: false }));
+    canvas.add(new fabric.Line([ i * grid, 0, i * grid, 1000], { static: true, hoverCursor: 'default', stroke: '#ccc', selectable: false }));
+    canvas.add(new fabric.Line([ 0, i * grid, 1000, i * grid], { static: true, hoverCursor: 'default', stroke: '#ccc', selectable: false }));
 }
 
 
-function buildEntity(top, left, height, width, text) {
-    var rect = new fabric.Rect({
+function buildEntity(top, left, text) {
+    var name = new fabric.Text(text, {
+        top: top + 5,
+        left: left + 5,
+        fontFamily: 'sans-serif',
+        fontSize: 16
+    });
+
+    var
+    height = Math.ceil(name.getBoundingRectHeight()) + 10,
+    width = Math. ceil(name.getBoundingRectWidth()) + 10;
+
+    var header = new fabric.Rect({
         top: top,
         left: left,
         height: height,
         width: width,
         stroke: '#000',
         strokeWidth: 2,
-        fill: '#FFF'
-    });
-
-    var header = new fabric.Rect({
-        top: top,
-        left: left,
-        height: 100,
-        width: width,
-        stroke: '#000',
-        strokeWidth: 2,
         fill: '#CCC'
     });
 
-    var itext = new fabric.Text(text, {
-        top: top + 5,
-        left: left + 5,
-        width: width - 5,
-        fontFamily: 'sans-serif',
-        fontSize: 14
+    var rect = new fabric.Rect({
+        top: top,
+        left: left,
+        height: height + 20,
+        width: width,
+        stroke: '#000',
+        strokeWidth: 2,
+        fill: '#FFF'
     });
 
-    var entity = new fabric.Group([rect, header, itext]);
+    var entity = new fabric.Group([rect, header, name], {
+        lockScalingX: true,
+        lockScalingY: true,
+        hasControls: false
+    });
 
     entities.push(entity);
 
@@ -51,7 +60,7 @@ function buildEntity(top, left, height, width, text) {
 $(document).ready(function() {
     $('#create-rectangle').click(function() {
         var text = $('input[name="text"]').val();
-        buildEntity(100, 100, 250, 250, text);
+        buildEntity(100, 100, text);
         $('.modal').modal('toggle');
         $('form')[0].reset();
         console.log('rectangle built')
@@ -60,7 +69,7 @@ $(document).ready(function() {
     canvas.on('mouse:dblclick', function(options) {
 
         console.log(options);
-        if(options.target) {
+        if(options.target && !options.target.static) {
             canvas.remove(options.target);
             console.log(entities);
             entities = removeObjectFromArray(entities, options.target);
