@@ -1,89 +1,160 @@
 var
-canvas = new fabric.Canvas('c'),
+canvas = new fabric.CanvasEx('c'),
 grid = 10,
 started = false,
 x = 0,
-y = 0;
-
+y = 0,
+entities = [];
 
 for (var i = 0; i < (1000 / grid + 1); i++) {
     canvas.add(new fabric.Line([ i * grid, 0, i * grid, 1000], { stroke: '#ccc', selectable: false }));
     canvas.add(new fabric.Line([ 0, i * grid, 1000, i * grid], { stroke: '#ccc', selectable: false }));
 }
 
-canvas.on('mouse:down', function(options) {
-    if(canvas.getActiveObject()){
-        return false;
-    }
 
-    console.log(options);
-
-    started = true;
-    x = options.e.layerX;
-    y = options.e.layerY;
-
-    var square = new fabric.Rect({
-      width: 0,
-      height: 0,
-      left: x,
-      top: y,
-      fill: '#000'
+function buildEntity(top, left, height, width, text) {
+    var rect = new fabric.Rect({
+        top: top,
+        left: left,
+        height: height,
+        width: width,
+        stroke: '#000',
+        strokeWidth: 2,
+        fill: '#FFF'
     });
 
-    canvas.add(square);
-    canvas.setActiveObject(square);
+    var header = new fabric.Rect({
+        top: top,
+        left: left,
+        height: 100,
+        width: width,
+        stroke: '#000',
+        strokeWidth: 2,
+        fill: '#CCC'
+    });
+
+    var itext = new fabric.Text(text, {
+        top: top + 5,
+        left: left + 5,
+        width: width - 5,
+        fontFamily: 'sans-serif',
+        fontSize: 14
+    });
+
+    var entity = new fabric.Group([rect, header, itext]);
+
+    entities.push(entity);
+
+    canvas.add(entity);
+}
+
+$(document).ready(function() {
+    $('button.rectangle').click(function() {
+        buildEntity(100, 100, 250, 250, 'Hello, world!');
+        console.log('rectangle built')
+    });
+
+    canvas.on('mouse:dblclick', function(options) {
+
+        console.log(options);
+        if(options.target) {
+            canvas.remove(options.target);
+            console.log(entities);
+            entities = removeObjectFromArray(entities, options.target);
+            console.log(entities);
+        }
+
+    });
+
 });
 
-canvas.on('mouse:move', function(options) {
-    if(!started) {
-        return false;
-    }
-
+function removeObjectFromArray(array, object) {
     var
-    dropX = options.e.layerX,
-    dropY = options.e.layerY,
-    w = Math.abs(dropX - x),
-    h = Math.abs(dropY - y);
+    output,
+    index = array.indexOf(object);
 
-    if (!w || !h) {
-        return false;
-    }
-
-    var square = canvas.getActiveObject();
-
-    if(dropX > x) {
-        square.set('width', w);
+    if(index > -1 ) {
+        output = array.splice(index, 1);
     } else {
-        square.set('left', dropX);
-        square.set('width', w);
+        output = array;
     }
 
-    if(dropY > y) {
-        square.set('height', h);
-    } else {
-        square.set('top', dropY);
-        square.set('height', h);
-    }
-    square.set('width', w).set('height', h);
-});
+    return output;
+}
 
-canvas.on('mouse:up', function(options) {
-    if(started) {
-      started = false;
-    }
+// canvas.on('mouse:down', function(options) {
+//     if(canvas.getActiveObject()){
+//         return false;
+//     }
 
-    var square = canvas.getActiveObject();
+//     console.log(options);
 
-    canvas.add(square);
+//     started = true;
+//     x = options.e.layerX;
+//     y = options.e.layerY;
+
+//     var square = new fabric.Rect({
+//       width: 0,
+//       height: 0,
+//       left: x,
+//       top: y,
+//       fill: '#000'
+//     });
+
+//     canvas.add(square);
+//     canvas.setActiveObject(square);
+// });
+
+// canvas.on('mouse:move', function(options) {
+//     if(!started) {
+//         return false;
+//     }
+
+//     var
+//     dropX = options.e.layerX,
+//     dropY = options.e.layerY,
+//     w = Math.abs(dropX - x),
+//     h = Math.abs(dropY - y);
+
+//     if (!w || !h) {
+//         return false;
+//     }
+
+//     var square = canvas.getActiveObject();
+
+//     if(dropX > x) {
+//         square.set('width', w);
+//     } else {
+//         square.set('left', dropX);
+//         square.set('width', w);
+//     }
+
+//     if(dropY > y) {
+//         square.set('height', h);
+//     } else {
+//         square.set('top', dropY);
+//         square.set('height', h);
+//     }
+//     square.set('width', w).set('height', h);
+// });
+
+// canvas.on('mouse:up', function(options) {
+//     if(started) {
+//       started = false;
+//     }
+
+//     var square = canvas.getActiveObject();
+
+//     canvas.add(square);
 
 
-    $.post("/diagram/" + diagram.diagramId, { diagram: JSON.stringify(canvas.toJSON()) });
-});
+//     $.post("/diagram/" + diagram.diagramId, { diagram: JSON.stringify(canvas.toJSON()) });
+// });
 
-canvas.on('object:modified', function() {
-    console.log('object:modified');
-})
+// canvas.on('object:modified', function() {
+//     console.log('object:modified');
+// })
 
-canvas.on('after:render', function() {
-    console.log('after:render')
-})
+// canvas.on('after:render', function() {
+//     console.log('after:render')
+// })

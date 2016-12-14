@@ -2,13 +2,18 @@
     <link rel='stylesheet' href='/stylesheets/diagram.css' />
 {{/extend}}
 
+<div class='menu'>
+    <button class="btn btn-default rectangle" type="button">Rectangle</button>
+</div>
+
 <div class="wrapper">
-    <canvas height="800" width="800" id="c"></canvas>
+    <canvas height="700" width="900" id="c"></canvas>
 </div>
 
 {{#extend "scripts"}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.1/fabric.min.js"></script>
+    <script src="/javascripts/fabric.canvasex.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script type="text/javascript">
         var
