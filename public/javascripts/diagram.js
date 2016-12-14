@@ -11,11 +11,9 @@ for (var i = 0; i < (1000 / grid + 1); i++) {
     canvas.add(new fabric.Line([ 0, i * grid, 1000, i * grid], { stroke: '#ccc', selectable: false }));
 }
 
-
-
 canvas.on('mouse:down', function(options) {
     if(canvas.getActiveObject()){
-    return false;
+        return false;
     }
 
     console.log(options);
@@ -40,8 +38,6 @@ canvas.on('mouse:move', function(options) {
     if(!started) {
         return false;
     }
-
-
 
     var
     dropX = options.e.layerX,
@@ -79,4 +75,15 @@ canvas.on('mouse:up', function(options) {
     var square = canvas.getActiveObject();
 
     canvas.add(square);
+
+
+    $.post("/diagram/" + diagram.diagramId, { diagram: JSON.stringify(canvas.toJSON()) });
 });
+
+canvas.on('object:modified', function() {
+    console.log('object:modified');
+})
+
+canvas.on('after:render', function() {
+    console.log('after:render')
+})

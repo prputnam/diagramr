@@ -29,4 +29,18 @@ router.get('/:id', function(req, res, next) {
     });
 });
 
+router.post('/:id', function(req, res, next) {
+    var
+    diagram = req.body.diagram,
+    diagramId = req.params.id;
+
+    db('diagrams')
+        .where('id', diagramId)
+        .update('diagram', diagram)
+        .then(function(data) {
+
+        res.end();
+    });
+})
+
 module.exports = router;
