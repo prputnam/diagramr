@@ -1,4 +1,5 @@
 var
+socket = io(),
 canvas = new fabric.CanvasEx('c'),
 grid = 10,
 started = false,
@@ -93,6 +94,11 @@ function removeObjectFromArray(array, object) {
 
     return output;
 }
+
+socket.on('connect', function() {
+    // join the correct chat room
+    socket.emit('join', { diagramId: diagramId, userId: userId, username: username });
+});
 
 // canvas.on('mouse:down', function(options) {
 //     if(canvas.getActiveObject()){
