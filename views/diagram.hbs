@@ -1,19 +1,9 @@
-<div class="container">
+{{#extend "stylesheets"}}
+    <link rel='stylesheet' href='/stylesheets/diagram.css' />
+{{/extend}}
 
-    <div class="row">
-        <h2>{{diagram.name}}</h2>
-
-        <h3>Created by {{diagram.createdByUsername}}</h3>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-xs-4"></div>
-        <div class="col-xs-8">
-            <canvas id="c" style="height:'100%'; width='100%'"></canvas>
-        </div>
-    </div>
-
-
+<div class="wrapper">
+    <canvas height="800" width="800" id="c"></canvas>
 </div>
 
 {{#extend "scripts"}}
