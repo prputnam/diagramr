@@ -1,24 +1,86 @@
 {{#extend "stylesheets"}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
     <link rel='stylesheet' href='/stylesheets/diagram.css' />
 {{/extend}}
 
 <div class='menu'>
-    <button class="btn btn-default rectangle" type="button" data-toggle="modal" data-target=".modal">Rectangle</button>
+    <button class="btn btn-default rectangle" type="button" data-toggle="modal" data-target=".modal">Entity</button>
     <div class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    <h4 class="modal-title">New Rectangle</h4>
+                    <h4 class="modal-title">New Entity</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" method="post">
+                    <form class="form-horizontal">
                         <div class="form-group">
-                            <label for="text" class="col-sm-2 control-label">Text</label>
+                            <label for="name" class="col-sm-2 control-label">Name</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="text" placeholder="Text">
+                                <input type="text" class="form-control" name="name" placeholder="Name">
                             </div>
                         </div>
+                        <hr>
+                        <h4 class="text-center">Fields</h4>
+                        <hr>
+                        <div class="form-group">
+                            <label for="field-1" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="field-1" placeholder="Field Name">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="datatype" class="col-sm-2 control-label">Datatype</label>
+                            <div class="col-sm-6">
+                                <select id="datatype" class="selectpicker" name="datatype" title="Pick a datatype" data-live-search="true">
+                                    <option data-sizable="false">bigint</option>
+                                    <option data-sizable="false">bigserial</option>
+                                    <option data-sizable="true">bit</option>
+                                    <option data-sizable="true">bit varying</option>
+                                    <option data-sizable="false">boolean</option>
+                                    <option data-sizable="false">box</option>
+                                    <option data-sizable="false">bytea</option>
+                                    <option data-sizable="true">char</option>
+                                    <option data-sizable="true">varchar</option>
+                                    <option data-sizable="false">cidr</option>
+                                    <option data-sizable="false">circle</option>
+                                    <option data-sizable="false">date</option>
+                                    <option data-sizable="false">double</option>
+                                    <option data-sizable="false">inet</option>
+                                    <option data-sizable="false">integer</option>
+                                    <option data-sizable="false">interval</option>
+                                    <option data-sizable="false">json</option>
+                                    <option data-sizable="false">jsonb</option>
+                                    <option data-sizable="false">line</option>
+                                    <option data-sizable="false">lseg</option>
+                                    <option data-sizable="false">macaddr</option>
+                                    <option data-sizable="false">money</option>
+                                    <option data-sizable="false">numeric</option>
+                                    <option data-sizable="false">path</option>
+                                    <option data-sizable="false">point</option>
+                                    <option data-sizable="false">polygon</option>
+                                    <option data-sizable="false">real</option>
+                                    <option data-sizable="false">smallint</option>
+                                    <option data-sizable="false">smallserial</option>
+                                    <option data-sizable="false">serial</option>
+                                    <option data-sizable="false">text</option>
+                                    <option data-sizable="false">time</option>
+                                    <option data-sizable="false">timestamp</option>
+                                    <option data-sizable="false">uuid</option>
+                                    <option data-sizable="false">xml</option>
+                                </select>
+                            </div>
+                            <div class="checkbox col-sm-2">
+                                <label>
+                                    <input id="set-size" type="checkbox" disabled> Set size
+                                </label>
+                            </div>
+                            <div class="col-sm-2">
+                                <input id="size" type="number" min="0" step="1" class="form-control" name="size" placeholder="Size" disabled>
+                            </div>
+                        </div>
+                        <hr>
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -36,6 +98,7 @@
 
 {{#extend "scripts"}}
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.7.1/fabric.min.js"></script>
     <script src="/javascripts/fabric.canvasex.js"></script>
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>

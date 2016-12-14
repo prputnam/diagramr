@@ -67,6 +67,36 @@ $(document).ready(function() {
         console.log('rectangle built')
     });
 
+    $('#datatype').change(function() {
+        var
+        selected = $('#datatype option:selected'),
+        sizable = selected.data('sizable');
+        console.log(sizable)
+
+        if(sizable) {
+            console.log('sizable')
+            $('#set-size').prop('disabled', false);
+        } else {
+            console.log('not')
+            $('#set-size').prop('disabled', true);
+            $('#set-size').removeAttr('checked');
+
+            $('#size').prop('disabled', true);
+            $('#size').val('');
+        }
+    })
+
+    $('#set-size').click(function() {
+        console.log
+
+        if($('#set-size').is(':checked')) {
+            $('#size').prop('disabled', false);
+        } else {
+            $('#size').prop('disabled', true);
+            $('#size').val('');
+        }
+    });
+
     canvas.on('mouse:dblclick', function(options) {
 
         console.log(options);
