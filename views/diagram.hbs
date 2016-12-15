@@ -18,7 +18,6 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                                 <h4 class="modal-title">New Entity</h4>
                             </div>
                             <div class="modal-body">
@@ -59,7 +58,6 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
                                 <h4 class="modal-title">Share Diagram</h4>
                             </div>
                             <div class="modal-body">
@@ -79,6 +77,37 @@
                                 </form>
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+
+                <button id="help-btn" class="btn btn-default pull-right" type="button" data-toggle="modal" data-target="#help-modal">Help</button>
+                <div id="help-modal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                <h4 class="modal-title">Help</h4>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Adding new entities</h4>
+                                <p>Click the New Entity button and fill out the form with the desired information. Clicking the create button will place it on the form where you can then modify it's position.</p>
+                                <br>
+                                <h4>Removing an entity</h4>
+                                <p>Double clicking on an entity will remove it from the diagram.</p>
+                                <br>
+                                <h4>Drawing relationships</h4>
+                                <p>I could not get a good, dynamic implementation of this working, it would all go to hell when I moved an entity. So, uh, use your imagination, or break out a Sharpie... Those come off monitors, right?</p>
+                                <br>
+                                <h4>Locking</h4>
+                                <p>Clicking the lock button will lock the diagram, meaning only you can modify it. Once you unlock it, other users will once again be able to modify the diagram. When another user has locked the diagram, you will see a message appear at the top of the page.</p>
+                                <br>
+                                <h4>Sharing</h4>
+                                <p>Clicking this button will open a modal allowing you to share the diagram with other users. Select as many as you would like from the dropdown and click Share.</p>
+                                <br>
+                                <h4>Saving</h4>
+                                <p>The diagram is saved automatically after changes have been made to it. Changes are immediately visible to other users.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
