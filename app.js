@@ -144,6 +144,14 @@ io.on('connection', function(socket){
         console.log(message.diagram)
         socket.broadcast.to(message.diagramId).emit('diagramUpdate', message.diagram);
     });
+
+    socket.on('diagramLocked', function(message) {
+        socket.broadcast.to(message.diagramId).emit('diagramLocked');
+    });
+
+    socket.on('diagramUnlocked', function(message) {
+        socket.broadcast.to(message.diagramId).emit('diagramUnlocked');
+    });
 });
 
 module.exports = app;
