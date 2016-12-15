@@ -2,17 +2,17 @@ var
 socket = io(),
 canvas = new fabric.CanvasEx('c'),
 grid = 10,
-started = false,
-x = 0,
-y = 0,
 numberOfFields = 0,
 diagramLockedByCurrentUser = false,
 diagramLockedByAnotherUser = false,
-entities = [],
 writeToDBTimer = null,
 writeToDBInactivityInterval = 200;
 
+// initial setup
 function init() {
+
+    // if there is a lock, determine who set it
+    // current user, or someone else
     if(diagram.lockedById) {
         if( diagram.lockedById != user.userId) {
             diagramLockedByAnotherUser = true;
@@ -21,12 +21,10 @@ function init() {
         }
     }
 
-    console.log('init')
     // if there is an existing diagram, draw it
     // otherwise, draw the grid
     if(diagram.diagram && diagram.diagram.length > 0) {
         updateCanvasFromJSON(diagram.diagram);
-        console.log('diagram exists')
     } else {
         for (var i = 0; i < (1000 / grid + 1); i++) {
             canvas.add(new fabric.Line([ i * grid, 0, i * grid, 1000], { static: true, hoverCursor: 'default', stroke: '#ccc', selectable: false }));
@@ -34,17 +32,18 @@ function init() {
         }
     }
 
-    // check lock status and take appropriate actions
+    // take appropriate actions based on the lock status
+    // this must come after the loading so that the "frozen" state
+    // will be created
     if(diagramLockedByAnotherUser) {
         setDiagramToLockedState();
     } else if(diagramLockedByCurrentUser) {
         lockDiagram();
     }
-
-
 }
 
-
+// used to set the locked state when a different user has
+// locked the diagram
 function setDiagramToLockedState() {
     diagramLockedByAnotherUser = true;
 
@@ -60,6 +59,8 @@ function setDiagramToLockedState() {
     }
 }
 
+// used to set the lock state when a different user
+// has unlocked the diagram
 function setDiagramToUnlockedState() {
     diagramLockedByAnotherUser = false;
 
@@ -74,6 +75,8 @@ function setDiagramToUnlockedState() {
     $('#locked-alert').remove();
 }
 
+// used to lock the diagram when the current user
+// sets the lock
 function lockDiagram() {
     diagramLockedByCurrentUser = true;
 
@@ -84,11 +87,12 @@ function lockDiagram() {
     $('#lock-btn').prop('disabled', true);
 
     $('#locked-message').click(function() {
-        console.log('unlocked')
         unlockDiagram();
     })
 }
 
+// used to unlock the diagram when the currnet user
+// set the lock
 function unlockDiagram() {
     diagramLockedByCurrentUser = false;
 
@@ -99,8 +103,11 @@ function unlockDiagram() {
     $('#lock-btn').prop('disabled', false);
 }
 
-function stringifyFields(fields) {
+// used to generate the text displayed in the
+// entitiy models
+function prettyPrintFields(fields) {
     var fieldsString = '';
+
     fields.forEach(function(field) {
         fieldsString += field.name;
         fieldsString += ':' + field.datatype.toUpperCase();
@@ -116,12 +123,15 @@ function stringifyFields(fields) {
     return fieldsString;
 }
 
+// used to build the group of objects that makes up
+// the entity on the canvas
 function buildEntity(entityName, fields) {
     var
     defaultTop = 100,
     defaultLeft = 100,
-    fieldsString = stringifyFields(fields);
-    console.log(entityName)
+    fieldsString = prettyPrintFields(fields);
+
+    // first build the entity name
     var nameText = new fabric.Text(entityName, {
         top: defaultTop + 5,
         left: defaultLeft + 5,
@@ -129,10 +139,11 @@ function buildEntity(entityName, fields) {
         fontSize: 16
     });
 
+    // and set the header height based upon it
     var
     headerHeight = Math.ceil(nameText.getBoundingRectHeight()) + 10;
 
-
+    // next buld the fields text
     var fieldText = new fabric.Text(fieldsString, {
         top: defaultTop + headerHeight + 5,
         left: defaultLeft + 5,
@@ -140,10 +151,12 @@ function buildEntity(entityName, fields) {
         fontSize: 12
     });
 
+    // and determine the entity height and width
     var
     bodyHeight = Math.ceil(fieldText.getBoundingRectHeight()) + 10,
     width = Math.ceil(Math.max(fieldText.getBoundingRectWidth(), nameText.getBoundingRectWidth()) + 10);
 
+    // build the header and the body
     var header = new fabric.Rect({
         top: defaultTop,
         left: defaultLeft,
@@ -153,7 +166,6 @@ function buildEntity(entityName, fields) {
         strokeWidth: 2,
         fill: '#CCC'
     });
-
 
     var body = new fabric.Rect({
         top: defaultTop + headerHeight,
@@ -165,19 +177,23 @@ function buildEntity(entityName, fields) {
         fill: '#FFF'
     });
 
+    // group all the objects and prevent them from being modified
     var entity = new fabric.Group([header, nameText, body, fieldText], {
         lockScalingX: true,
         lockScalingY: true,
         hasControls: false
     });
 
+    // add the entity to the center of the canvas
     canvas.add(entity);
     entity.center();
     entity.setCoords();
 
+    // push the change to other clients and the database
     pushDiagram();
 }
 
+// set up the handler
 $(document).ready(function() {
     init();
 
@@ -188,25 +204,25 @@ $(document).ready(function() {
         $('#new-entity-').empty();
     });
 
-    // add fields
+    // add field to the entity modal
     $('#additional-field').click(function() {
         addFieldToForm(numberOfFields);
     });
 
-    // handle submission
+    // handle submission of the entity modal
     $('#create-entity').click(function() {
         var form = $('#new-entity-form')[0];
 
-        console.log(form.checkValidity());
+        // if it passes the HMTL5 validation..
         if(!form.checkValidity || form.checkValidity()) {
 
+            // get the entity name
             var
             entityName = $('#entity-name').val(),
             fields = [];
-            console.log(entityName);
 
+            // and build an array representing the fields
             for(var i = 0; i < numberOfFields; i++) {
-                console.log($('#field-name-' + i))
 
                 var field = {
                     name: $('#field-name-' + i).val(),
@@ -214,25 +230,30 @@ $(document).ready(function() {
                     size: $('#size-' + i).val()
                 }
 
+                // if no explicit size set, make it null
                 field.size = field.size.length > 0 ? field.size : null;
                 fields.push(field);
             }
 
+            // hand off the name and fields to the buildEntity method,
+            // clean up after modal
             buildEntity(entityName, fields);
             $('#entity-modal').modal('toggle');
             $('new-entity-form')[0].reset();
         }
     });
 
+    // lock the diagram
     $('#lock-btn').click(function() {
-        console.log(user.userId);
         diagram.lockedById = user.userId;
         lockDiagram();
     });
 
+    // gather the data for the share modal
     $('#share-btn').click(function() {
         $.getJSON('/users', function(data) {
 
+            // display all the users that aren't the current user
             data.forEach(function(u) {
                 if(u.userId != user.userId) {
                     $('#share-select').append(`<option>${u.username}</option>`);
@@ -243,29 +264,32 @@ $(document).ready(function() {
         });
     });
 
+    // submit the share modal
     $('#share-submit').click(function() {
         var usernames = JSON.stringify($('#share-select').val());
-        console.log(usernames)
         $.post('/diagram/' + diagram.diagramId + '/addUsers', { usernames: usernames });
     });
 
+    // send chat message
     $("#messageSend").click(function() {
         var content = $("#messageText").val();
         socket.emit('message', { userId: user.userId, name: user.username, content: content, diagramId: diagram.diagramId });
         $("#messageText").val('');
     });
 
+    // delete item when it is double clicked
     canvas.on('mouse:dblclick', function(options) {
-        if(!diagram.lockedById || diagram.lockedById == user.userId) {
+        // if the diagram isn't locked
+        if(!diagramLockedByAnotherUser) {
 
+            // and the target exists and it isn't marked as static, remove it
             if(options.target && !options.target.static) {
                 canvas.remove(options.target);
-                entities = removeObjectFromArray(entities, options.target);
             }
         }
-
     });
 
+    // on object move, start a timer to push the state change with
     canvas.on('object:moving', function() {
         if(!diagramLockedByAnotherUser) {
             clearTimeout(writeToDBTimer);
@@ -277,8 +301,8 @@ $(document).ready(function() {
 
 });
 
-
-
+// serializes and then sends the canvas to other clients via
+// socket.io and to the database
 function pushDiagram() {
     var diagramString = JSON.stringify(canvas.toJSON(['hoverCursor', 'selectable', 'lockScalingX', 'lockScalingY', 'hasControls', 'static']));
 
@@ -286,6 +310,7 @@ function pushDiagram() {
     socket.emit('diagramUpdate', { diagramId: diagram.diagramId, diagram: diagramString });
 }
 
+// update the canvas with stringified JSON data
 function updateCanvasFromJSON(diagramString) {
     canvas.clear();
     canvas.loadFromJSON(diagramString);
@@ -296,6 +321,7 @@ function updateCanvasFromJSON(diagramString) {
     }
 }
 
+// used to add another field to the entity creation modal
 function addFieldToForm(fieldNumber) {
     // this is super ugly here, but damn the templating is slick
     var fieldTemplate =
@@ -359,20 +385,19 @@ function addFieldToForm(fieldNumber) {
     </div>
     <hr>`;
 
+    // append the template to the appropriate spot
     $('#field-wrapper').append(fieldTemplate);
     $('#datatype-' + fieldNumber).selectpicker();
 
+    // set the handler
     $('#datatype-' + fieldNumber).change(function() {
         var
         selected = $('#datatype-' + fieldNumber + ' option:selected'),
         sizable = selected.data('sizable');
-        console.log(sizable)
 
         if(sizable) {
-            console.log('sizable')
             $('#set-size-' + fieldNumber).prop('disabled', false);
         } else {
-            console.log('not')
             $('#set-size-' + fieldNumber).prop('disabled', true);
             $('#set-size-' + fieldNumber).removeAttr('checked');
 
@@ -380,10 +405,9 @@ function addFieldToForm(fieldNumber) {
             $('#size-' + fieldNumber).prop('required', false);
             $('#size-' + fieldNumber).val('');
         }
-    })
+    });
 
     $('#set-size-' + fieldNumber).click(function() {
-        console.log
 
         if($('#set-size-' + fieldNumber).is(':checked')) {
             $('#size-' + fieldNumber).prop('disabled', false);
@@ -395,23 +419,11 @@ function addFieldToForm(fieldNumber) {
         }
     });
 
+    // and lastly, incrememnt the field count
     numberOfFields++;
 }
 
-function removeObjectFromArray(array, object) {
-    var
-    output,
-    index = array.indexOf(object);
-
-    if(index > -1 ) {
-        output = array.splice(index, 1);
-    } else {
-        output = array;
-    }
-
-    return output;
-}
-
+// used to add a chat message to the chat pane
 function addMessageToScreen(message) {
     var
     messagePanel = $("#message-panel"),
@@ -420,6 +432,7 @@ function addMessageToScreen(message) {
     messagePanel.append(newElement);
 };
 
+// helper function for displaying chat messages
 function buildMessageElement(message) {
     var newElement =  `
         <div class="row message-bubble">
@@ -430,12 +443,15 @@ function buildMessageElement(message) {
     return newElement;
 }
 
+// socket.io land
+
+// when we connect, tell the server what room to place us in
 socket.on('connect', function() {
     // join the correct chat room
-    console.log(diagram)
     socket.emit('join', { diagramId: diagram.diagramId, userId: user.userId, username: user.username });
 });
 
+// when we get clients, update the current list of users
 socket.on('clients', function(clients) {
     var userList = $('#user-list');
 
@@ -444,13 +460,14 @@ socket.on('clients', function(clients) {
     clients.forEach(function(client) {
         userList.append('<li>' + client.username + '</li>');
     });
-    console.log(clients);
 });
 
+// add incoming chat messages to the screen
 socket.on('message', function(message) {
     addMessageToScreen(message);
 });
 
+// handle locking and unlocking the diagram
 socket.on('diagramUnlocked', function() {
     setDiagramToUnlockedState();
 });
@@ -459,6 +476,7 @@ socket.on('diagramLocked', function() {
     setDiagramToLockedState();
 })
 
+// update the canvas with new data
 socket.on('diagramUpdate', function(diagramString) {
     updateCanvasFromJSON(diagramString);
 });
