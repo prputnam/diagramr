@@ -285,6 +285,7 @@ $(document).ready(function() {
             // and the target exists and it isn't marked as static, remove it
             if(options.target && !options.target.static) {
                 canvas.remove(options.target);
+                pushDiagram();
             }
         }
     });
