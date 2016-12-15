@@ -239,7 +239,7 @@ $(document).ready(function() {
             // clean up after modal
             buildEntity(entityName, fields);
             $('#entity-modal').modal('toggle');
-            $('new-entity-form')[0].reset();
+            $('#entity-name').val('');
         }
     });
 
