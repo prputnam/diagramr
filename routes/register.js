@@ -8,7 +8,11 @@ var router = express.Router();
 var parser = bodyParser.urlencoded({ extended: false });
 
 router.get('/', function(req, res, next) {
-    res.render('register', { title: 'register' });
+    if(req.session && req.session.username) {
+        res.redirect('/lobby');
+    } else {
+        res.render('register', { title: 'register' });
+    }
 });
 
 router.post('/', parser, function(req, res, next) {

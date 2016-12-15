@@ -5,14 +5,11 @@ var db = require('db');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
-    if(req.session && req.session.email) {
-        console.log('has session');
-        console.log(req.session);
+    if(req.session && req.session.username) {
+        res.redirect('/lobby');
     } else {
-        console.log('no session')
+        res.render('login', {title: 'Login', body: '<p>Login page</p>'});
     }
-
-    res.render('login', {title: 'Login', body: '<p>Login page</p>'});
 });
 
 router.post('/', function(req, res, next) {
