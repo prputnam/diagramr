@@ -75,8 +75,9 @@ function buildEntity(top, left, text) {
 $(document).ready(function() {
 
     // reset field count when modal is openned
-    $('.modal').on('shown.bs.modal', function() {
+    $('.modal').on('hidden.bs.modal', function() {
         numberOfFields = 0;
+        $('#field-wrapper').empty();
     });
 
     $('#additional-field').click(function() {
