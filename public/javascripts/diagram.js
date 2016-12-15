@@ -219,8 +219,8 @@ $(document).ready(function() {
             }
 
             buildEntity(entityName, fields);
-            $('.modal').modal('toggle');
-            $('form')[0].reset();
+            $('#entity-modal').modal('toggle');
+            $('new-entity-form')[0].reset();
         }
     });
 
