@@ -18,8 +18,6 @@ router.get('/', function(req, res, next) {
 router.post('/', parser, function(req, res, next) {
     bcrypt.hash(req.body.password, 10, function(err, hash) {
         db('users').insert({ email: req.body.email, password: hash, username: req.body.username }).then(function(data) {
-            console.log(data);
-
             req.session.email = req.body.email;
             res.redirect('/lobby');
         }).catch(function(err) {

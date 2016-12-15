@@ -15,7 +15,6 @@ router.get('/', function(req, res, next) {
         .from('users AS u')
         .then(function(data) {
 
-        console.log(data);
         res.json(data);
     });
 });
