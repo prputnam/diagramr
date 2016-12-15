@@ -46,6 +46,8 @@ function init() {
 
 
 function setDiagramToLockedState() {
+    diagramLockedByAnotherUser = true;
+
     canvas.forEachObject(function(object){
         object.selectable = false;
     });
@@ -59,6 +61,8 @@ function setDiagramToLockedState() {
 }
 
 function setDiagramToUnlockedState() {
+    diagramLockedByAnotherUser = false;
+
     canvas.forEachObject(function(object){
         if(!object.static) {
             object.selectable = true;
@@ -71,6 +75,8 @@ function setDiagramToUnlockedState() {
 }
 
 function lockDiagram() {
+    diagramLockedByCurrentUser = true;
+
     $.post('/diagram/' + diagram.diagramId + '/lock', { lockedById: diagram.lockedById });
     socket.emit('diagramLocked', { diagramId: diagram.diagramId });
 
@@ -84,6 +90,8 @@ function lockDiagram() {
 }
 
 function unlockDiagram() {
+    diagramLockedByCurrentUser = false;
+
     $.post('/diagram/' + diagram.diagramId + '/lock', { lockedById: null });
     socket.emit('diagramUnlocked', { diagramId: diagram.diagramId });
 
@@ -257,7 +265,7 @@ $(document).ready(function() {
     });
 
     canvas.on('after:render', function() {
-        if(diagramLockedByAnotherUser) {
+        if(!diagramLockedByAnotherUser) {
             clearTimeout(writeToDBTimer);
             writeToDBTimer = setTimeout(pushDiagram, writeToDBInactivityInterval);
         } else {
