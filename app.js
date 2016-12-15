@@ -71,7 +71,7 @@ app.use(session({
         httpOnly: true,
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 60000 }
+        cookie: { maxAge: 300000 }
 }));
 
 app.use('/', index);
@@ -137,6 +137,12 @@ io.on('connection', function(socket){
 
         // send message to all clients in the correct room
         io.sockets.in(message.diagramId).emit('message', message);
+    });
+
+    socket.on('diagramUpdate', function(message) {
+        console.log('diagramUpdate');
+        console.log(message.diagram)
+        socket.broadcast.to(message.diagramId).emit('diagramUpdate', message.diagram);
     });
 });
 

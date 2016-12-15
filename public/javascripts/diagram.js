@@ -6,7 +6,9 @@ started = false,
 x = 0,
 y = 0,
 numberOfFields = 0,
-entities = [];
+entities = [],
+writeToDBTimer = null,
+writeToDBInactivityInterval = 1000;
 
 //canvas.selection = false;
 
@@ -108,6 +110,30 @@ $(document).ready(function() {
 
 });
 
+function pushDiagram() {
+    var diagramString = JSON.stringify(canvas.toJSON(['hoverCursor', 'selectable', 'lockScalingX', 'lockScalingY', 'hasControls', 'static']));
+
+    saveToDatabase(diagramString);
+    sendToOtherClients(diagramString);
+}
+
+function sendToOtherClients(diagramString) {
+    socket.emit('diagramUpdate', { diagramId: diagram.diagramId, diagram: diagramString });
+}
+
+function saveToDatabase(diagramString) {
+    $.post("/diagram/" + diagram.diagramId, { diagram: diagramString });
+}
+
+function updateCanvasFromJSON(diagramString) {
+    canvas.clear();
+    canvas.loadFromJSON(diagramString);
+    canvas.renderAll();
+
+    if(diagram.lockedById && diagram.lockedById != user.userId) {
+        diagramLocked();
+    }
+}
 function addFieldToForm(fieldNumber) {
     var fieldTemplate =
     `<div class="form-group">
@@ -234,6 +260,9 @@ socket.on('clients', function(clients) {
     console.log(clients);
 });
 
+socket.on('diagramUpdate', function(diagramString) {
+    updateCanvasFromJSON(diagramString);
+});
 // canvas.on('mouse:down', function(options) {
 //     if(canvas.getActiveObject()){
 //         return false;
