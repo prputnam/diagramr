@@ -10,7 +10,7 @@ diagramLockedByCurrentUser = false,
 diagramLockedByAnotherUser = false,
 entities = [],
 writeToDBTimer = null,
-writeToDBInactivityInterval = 1000;
+writeToDBInactivityInterval = 200;
 
 function init() {
     if(diagram.lockedById) {
@@ -174,6 +174,8 @@ function buildEntity(entityName, fields) {
     canvas.add(entity);
     entity.center();
     entity.setCoords();
+
+    pushDiagram();
 }
 
 $(document).ready(function() {
@@ -264,7 +266,7 @@ $(document).ready(function() {
 
     });
 
-    canvas.on('after:render', function() {
+    canvas.on('object:moving', function() {
         if(!diagramLockedByAnotherUser) {
             clearTimeout(writeToDBTimer);
             writeToDBTimer = setTimeout(pushDiagram, writeToDBInactivityInterval);
