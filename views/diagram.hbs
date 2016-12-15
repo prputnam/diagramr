@@ -3,98 +3,91 @@
     <link rel='stylesheet' href='/stylesheets/diagram.css' />
 {{/extend}}
 
-<div class='menu'>
-    <button class="btn btn-default rectangle" type="button" data-toggle="modal" data-target=".modal">Entity</button>
-    <div class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                    <h4 class="modal-title">New Entity</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="name" placeholder="Name">
-                            </div>
-                        </div>
-                        <hr>
-                        <h4 class="text-center">Fields</h4>
-                        <hr>
-                        <div class="form-group">
-                            <label for="field-1" class="col-sm-2 control-label">Name</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" name="field-1" placeholder="Field Name">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="datatype" class="col-sm-2 control-label">Datatype</label>
-                            <div class="col-sm-6">
-                                <select id="datatype" class="selectpicker" name="datatype" title="Pick a datatype" data-live-search="true">
-                                    <option data-sizable="false">bigint</option>
-                                    <option data-sizable="false">bigserial</option>
-                                    <option data-sizable="true">bit</option>
-                                    <option data-sizable="true">bit varying</option>
-                                    <option data-sizable="false">boolean</option>
-                                    <option data-sizable="false">box</option>
-                                    <option data-sizable="false">bytea</option>
-                                    <option data-sizable="true">char</option>
-                                    <option data-sizable="true">varchar</option>
-                                    <option data-sizable="false">cidr</option>
-                                    <option data-sizable="false">circle</option>
-                                    <option data-sizable="false">date</option>
-                                    <option data-sizable="false">double</option>
-                                    <option data-sizable="false">inet</option>
-                                    <option data-sizable="false">integer</option>
-                                    <option data-sizable="false">interval</option>
-                                    <option data-sizable="false">json</option>
-                                    <option data-sizable="false">jsonb</option>
-                                    <option data-sizable="false">line</option>
-                                    <option data-sizable="false">lseg</option>
-                                    <option data-sizable="false">macaddr</option>
-                                    <option data-sizable="false">money</option>
-                                    <option data-sizable="false">numeric</option>
-                                    <option data-sizable="false">path</option>
-                                    <option data-sizable="false">point</option>
-                                    <option data-sizable="false">polygon</option>
-                                    <option data-sizable="false">real</option>
-                                    <option data-sizable="false">smallint</option>
-                                    <option data-sizable="false">smallserial</option>
-                                    <option data-sizable="false">serial</option>
-                                    <option data-sizable="false">text</option>
-                                    <option data-sizable="false">time</option>
-                                    <option data-sizable="false">timestamp</option>
-                                    <option data-sizable="false">uuid</option>
-                                    <option data-sizable="false">xml</option>
-                                </select>
-                            </div>
-                            <div class="checkbox col-sm-2">
-                                <label>
-                                    <input id="set-size" type="checkbox" disabled> Set size
-                                </label>
-                            </div>
-                            <div class="col-sm-2">
-                                <input id="size" type="number" min="0" step="1" class="form-control" name="size" placeholder="Size" disabled>
-                            </div>
-                        </div>
-                        <hr>
+<div class="container">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#diagram" data-toggle="tab"><h2>Diagram</h2></a></li>
+        <li><a href="#chat" data-toggle="tab"><h2>Chat</h2></a></li>
+        <li><a href="#users" data-toggle="tab"><h2>Users</h2></a></li>
+    </ul>
 
-                    </form>
+    <div class="tab-content">
+        <div class="tab-pane active" id="diagram">
+            <div class='menu'>
+                <button class="btn btn-default rectangle" type="button" data-toggle="modal" data-target=".modal">Entity</button>
+                <div class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                                <h4 class="modal-title">New Entity</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="name" class="col-sm-2 control-label">Name</label>
+                                        <div class="col-sm-10">
+                                            <input type="text" class="form-control" name="name" placeholder="Name">
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <h4 class="text-center">Fields</h4>
+                                    <hr>
+                                    <div id="field-wrapper">
+
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="button" id="additional-field" class="btn btn-default pull-right">
+                                            <span class="glyphicon glyphicon-plus"></span> Add field
+                                        </button>
+                                    </div>
+                                    <hr>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="button" id="create-rectangle" class="btn btn-primary">Create</button>
+                            </div>
+                        </div><!-- /.modal-content -->
+                    </div><!-- /.modal-dialog -->
+                </div><!-- /.modal -->
+            </div>
+
+            <div class="wrapper">
+                <canvas height="700" width="900" id="c"></canvas>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="chat">
+            <div class="row">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Chat </div>
+                    <div class="panel-body">
+                        <div id="message-panel" class="container">
+                        </div>
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input id="messageText" type="text" class="form-control">
+                                <span class="input-group-btn">
+                                    <button id="messageSend" class="btn btn-default" type="button">Send</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" id="create-rectangle" class="btn btn-primary">Create</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+            </div>
+        </div>
+
+        <div class="tab-pane" id="users">
+            <h2>Current Users Online</h2>
+            <ul id="user-list">
+
+            </ul>
+        </div>
+
+    </div>
 </div>
 
-<div class="wrapper">
-    <canvas height="700" width="900" id="c"></canvas>
-</div>
 
 {{#extend "scripts"}}
 
@@ -104,6 +97,7 @@
     <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     <script type="text/javascript">
         var
+        user = {{{json user}}}
         diagram = {{{json diagram}}};
         console.log(diagram);
     </script>

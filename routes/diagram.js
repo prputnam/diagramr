@@ -22,7 +22,9 @@ router.get('/:id', function(req, res, next) {
             .first().then(function(data) {
 
         console. log(data)
-        res.render('diagram', { username: req.session.username, diagram: data });
+
+        var user = { userId: req.session.userId, username: req.session.username };
+        res.render('diagram', { user: user, diagram: data });
     },
     function(err) {
         console.log(err)
