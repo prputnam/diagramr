@@ -3,22 +3,8 @@ socket = io(),
 messages = [],
 diagramId = -1;
 
-
-//rivets.bind($('#message-panel'), { messages: messages });
-
-/*
-
 $(document).ready(function() {
-    $("#messageSend").class(function() {
-        console.log($("#messageText").val());
-    });
-});
-//socket.emit('message', {name: userId, message})
-
-*/
-
-$(document).ready(function() {
-
+    // send messages
     $("#messageSend").click(function() {
         var content = $("#messageText").val();
         socket.emit('message', { userId: userId, name: username, content: content, diagramId: diagramId });
@@ -27,15 +13,18 @@ $(document).ready(function() {
 
 });
 
+// on receipt of new messages
 socket.on('message', function(message) {
     addMessageToScreen(message);
 });
 
+// on connection..
 socket.on('connect', function() {
     // join the correct chat room
     socket.emit('join', { diagramId: diagramId, userId: userId, username: username });
 });
 
+// handle client list updating
 socket.on('clients', function(clients) {
     var userList = $('#user-list');
 
@@ -44,9 +33,9 @@ socket.on('clients', function(clients) {
     clients.forEach(function(client) {
         userList.append('<li>' + client.username + '</li>');
     });
-    console.log(clients);
 });
 
+// add new chat message to the screen
 addMessageToScreen = function(message) {
     var
     messagePanel = $("#message-panel"),
@@ -55,6 +44,7 @@ addMessageToScreen = function(message) {
     messagePanel.append(newElement);
 };
 
+// helper to add a message to the screen
 buildMessageElement = function(message) {
     var newElement =  `
         <div class="row message-bubble">
@@ -64,7 +54,3 @@ buildMessageElement = function(message) {
 
     return newElement;
 }
-
-
-console.log(userId);
-console.log(diagrams);

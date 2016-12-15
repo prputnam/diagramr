@@ -141,8 +141,6 @@ io.on('connection', function(socket){
     });
 
     socket.on('diagramUpdate', function(message) {
-        console.log('diagramUpdate');
-        console.log(message.diagram)
         socket.broadcast.to(message.diagramId).emit('diagramUpdate', message.diagram);
     });
 
