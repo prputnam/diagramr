@@ -43,6 +43,53 @@ router.post('/:id', function(req, res, next) {
 
         res.end();
     });
-})
+});
+
+router.post('/:id/lock', function(req, res, next) {
+    console.log('hit')
+
+    var
+    diagramId = req.params.id,
+    lockedById = req.body.lockedById;
+
+    if(lockedById == '') lockedById = null;
+    console.log(lockedById)
+
+    console.log(db('diagrams')
+        .where('id', diagramId)
+        .update('locked_by', lockedById).toString())
+
+    db('diagrams')
+        .where('id', diagramId)
+        .update('locked_by', lockedById)
+        .then(function(data) {
+
+        res.end();
+    });
+});
+
+router.post('/:id/addUsers', function(req, res, next) {
+    console.log('hit')
+
+    console.log(req.body)
+
+    var
+    diagramId = req.params.id,
+    usernames = JSON.parse(req.body.usernames);
+
+    console.log(usernames)
+
+    db.from('user_diagrams')
+        .insert(function() {
+            this.from('users AS u')
+                .whereIn('u.username', usernames)
+                .select('id AS user_id', db.raw('? AS ??', [diagramId, 'diagram_id']))
+        })
+        .then(function(data) {
+
+
+            res.end();
+        });
+});
 
 module.exports = router;

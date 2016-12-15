@@ -1,9 +1,23 @@
 var express = require('express');
 var router = express.Router();
+var db = require('db');
 
-/* GET users listing. */
+router.use(function(req, res, next) {
+    if(req.session.userId) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
+});
+
 router.get('/', function(req, res, next) {
-  res.render('index', {title: 'Users', body: '<p>Users page</p>'});
+    db.select('u.id AS userId', 'u.username')
+        .from('users AS u')
+        .then(function(data) {
+
+        console.log(data);
+        res.json(data);
+    });
 });
 
 module.exports = router;
